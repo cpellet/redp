@@ -95,6 +95,7 @@ class AppStore {
 
   togglePlay() {
     const audio = this.playingSong.audio;
+    if(!audio) return;
     if (audio.paused) audio.play();
     else audio.pause();
     this.songs = this.songs.map(song => {

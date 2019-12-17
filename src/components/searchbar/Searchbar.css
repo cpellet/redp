@@ -1,0 +1,31 @@
+input:focus {
+    outline-width: 0;
+}
+
+::placeholder{
+    color: #cdcdcd;
+}
+
+.react-autosuggest__input {
+    padding-left: 5%;
+    font-size: 40px;
+    font-weight: lighter;
+    border: none;
+    text-align: center;
+    flex: 1;
+}
+
+.react-autosuggest__suggestions-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.react-autosuggest__suggestion {
+    font-size: x-large;
+}
+
+.react-autosuggest__suggestion-match {
+    color: red;
+    font-weight: bold;
+}
