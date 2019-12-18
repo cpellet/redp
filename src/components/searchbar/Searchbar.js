@@ -1,24 +1,29 @@
 import React, { PureComponent } from 'react';
 import Autosuggest from 'react-autosuggest';
 import './Searchbar.css';
-
+var Tidal = require('tidal-api-wrapper');
+var tidal = new Tidal();
 var matchlist = [];
+var fetched=true;
 
 const getSuggestions = value => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
-
-    return inputLength === 0 ? [] : matchlist.filter(lang =>
-        lang.name.toLowerCase().slice(0, inputLength) === inputValue
-    );
+    return inputLength === 0 ? [] : matchlist;
 };
 
-const getSuggestionValue = suggestion => suggestion.name;
+const getSuggestionValue = suggestion => suggestion;
 
 const renderSuggestion = suggestion => (
-  <div>
-    {suggestion.name + " - " + suggestion.artists[0].name}
-  </div>
+    <div>
+        <img className="rthumb" src={suggestion.thumburl} width="50" height="50" align="left"></img>
+        <div className="ralbum">
+        {suggestion.title}
+        </div>
+        <div className="rartist">
+        {suggestion.artists[0].name}
+        </div>
+    </div>
 );
 
 class Searchbar extends PureComponent {
@@ -28,10 +33,19 @@ class Searchbar extends PureComponent {
     }
 
     onSuggestionsFetchRequested = ({ value }) => {
+        this.displaymatches(value);
+    };
+
+    displaymatches(value){
+        if(fetched==false){return new Promise(resolve => setTimeout(resolve, 100)).then(() => {
+            this.displaymatches(value);
+        })
+        }
         this.setState({
             matches: getSuggestions(value)
         });
-    };
+        console.log(this.state.matches.length);
+    }
     
     onSuggestionsClearRequested = () => {
         this.setState({
@@ -40,10 +54,27 @@ class Searchbar extends PureComponent {
     };
 
     onChange = (event, { newValue }) => {
+        fetched=false;
         this.setState({
-          value: newValue
+          value: newValue,
+          matches: []
         });
-        //Update search here
+        matchlist=[];
+        if(newValue.length<3) return;
+        tidal.search(newValue, 'artists', 1)
+            .then(artists => tidal.getArtistAlbums(artists[0].id))
+            .then((albums) => {
+                albums.forEach(album => {
+                    if(matchlist.includes(album)) return;
+                    album.thumburl = "https://resources.tidal.com/images/"+album.cover.replace(/-/g, "/")+"/80x80.jpg";
+                    matchlist.push(album);
+                });
+                fetched=true;
+                return albums;
+            })
+            .catch((err) => {
+                console.log(err);
+        });
     };
 
     render() {

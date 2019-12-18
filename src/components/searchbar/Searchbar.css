@@ -22,10 +22,29 @@ input:focus {
 }
 
 .react-autosuggest__suggestion {
-    font-size: x-large;
+    font-size: large;
+    padding: 8px;
 }
 
 .react-autosuggest__suggestion-match {
     color: red;
     font-weight: bold;
+}
+
+.rthumb{
+    padding: 3px;
+}
+
+.ralbum{
+    padding-left: 10px;
+    font-weight: bolder;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.rartist{
+    padding-left: 10px;
+    color: gray;
+    overflow: hidden;
+    white-space: nowrap;
 }
